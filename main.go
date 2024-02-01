@@ -7,6 +7,8 @@ import (
 
 func main() {
 	router := gin.Default()
+	router.ForwardedByClientIP = true
+	router.SetTrustedProxies([]string{"127.0.0.1"})
 
 	// Define routes
 	router.GET("/ping", func(c *gin.Context) {
@@ -17,7 +19,7 @@ func main() {
 
 	// Start server
 	port := 8080
-	fmt.Printf("Receipt Processor Server is running on port %d...\n", port)
-	fmt.Printf("Access the API via localhost: http://localhost:%d/ping\n", port)
+	fmt.Printf("\nReceipt Processor Server is running on port %d...\n", port)
+	fmt.Printf("Access the API via localhost: http://localhost:%d/ping\n\n", port)
 	router.Run(fmt.Sprintf(":%d", port))
 }
