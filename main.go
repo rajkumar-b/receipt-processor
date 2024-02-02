@@ -14,6 +14,7 @@ func main() {
 
 	// Add routes
 	router.GET("/ping", handler.SendPing)
+	router.GET("/items", handler.GetItems)
 
 	// Start server
 	port := 8080
