@@ -35,6 +35,6 @@ This project uses default gitignore taken from github for Go (refer: https://git
 
 ## Project Execution (in Development / Debug mode)
 
-To run the project, simply use `go run main.go` and follow the link: http://localhost:8080/ping to execute a simple ping (GET request via REST API).
+To run the project, simply use `go run .` or `go run main.go` and follow the link: http://localhost:8080/ping to execute a basic server ping (GET request via REST API).
 
 To build and run the project, use `go build .` followed by `.\receipt-processor.exe` to initiate the server on localhost. Follow the same link as above to hit the API endpoints.
