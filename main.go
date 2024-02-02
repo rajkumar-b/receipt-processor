@@ -19,6 +19,6 @@ func main() {
 	// Start server
 	port := 8080
 	fmt.Printf("\nReceipt Processor Server is running on port %d...\n", port)
-	fmt.Printf("Access the API via localhost: http://localhost:%d/ping\n\n", port)
+	fmt.Printf("Access the API via localhost: http://localhost:%d/<endpoint>\n\n", port)
 	router.Run(fmt.Sprintf("localhost:%d", port))
 }
