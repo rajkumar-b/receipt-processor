@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"rajkumar.app/receipt-processor/handler"
 )
 
 func main() {
@@ -12,11 +13,7 @@ func main() {
 	router.SetTrustedProxies([]string{"127.0.0.1"})
 
 	// Add routes
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	router.GET("/ping", handler.SendPing)
 
 	// Start server
 	port := 8080
