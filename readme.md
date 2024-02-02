@@ -32,3 +32,9 @@ Now the basic backbone of the Go project is ready.
 To setup go with Gin Gonic Framework, use: `go get -u github.com/gin-gonic/gin` (refer: https://gin-gonic.com/docs/quickstart/)
 
 This project uses default gitignore taken from github for Go (refer: https://github.com/github/gitignore/blob/main/Go.gitignore) during initialization. Any follow-up changes can be tracked via respective branch.
+
+## Project Execution (in Development / Debug mode)
+
+To run the project, simply use `go run .` or `go run main.go` and follow the link: http://localhost:8080/ping to execute a basic server ping (GET request via REST API).
+
+To build and run the project, use `go build .` followed by `.\receipt-processor.exe` to initiate the server on localhost. Follow the same link as above to hit the API endpoints.
