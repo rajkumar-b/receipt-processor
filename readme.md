@@ -9,6 +9,22 @@ This application provides the basic functionality for processing a receipt, as g
 **Technology:** Go \
 **Framework:** Gin Gonic
 
+## Project Execution (via Docker)
+
+To simply test the project deliverables, follow below steps:
+1. Download docker desktop (from https://www.docker.com/products/docker-desktop/) and run it minimized
+2. Clone the git repository (Use cmd: `git clone https://github.com/rajkumar-b/receipt-processor.git`)
+3. Switch to the cloned repository's root and build the docker image via cmd: `docker-compose -f docker/docker-compose.yml build`
+4. Spawn up the container from the built image using cmd: `docker-compose -f docker/docker-compose.yml up`
+5. Test the APIs
+6. Once done, bring down the container either using exit commands like 'CTRL+C' in same terminal or using the command `docker-compose -f docker/docker-compose.yml down` via different terminal in same root.
+<br><br><br><br>
+
+_______________________________________ 
+_______________________________________ 
+`For Developers` 
+_______________________________________ 
+_______________________________________
 
 ## Project Creation
 Before creating the project, ensure that the following are installed:
