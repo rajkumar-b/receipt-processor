@@ -60,3 +60,7 @@ To build and run the project, use `go build .` followed by `.\receipt-processor.
 To run the test on handler, simply use `go test rajkumar.app/receipt-processor/handler`.
 
 To run the test with coverage report, use `go test --cover rajkumar.app/receipt-processor/handler`.
+
+To run the coverage report for all tests, use `go test ./... -coverprofile cover.out`, followed by `go tool cover -func cover.out`.
+
+To generate a html cover report, run the former command from above line, followed by `go tool cover -html cover.out -o coverage.html`. The coverage details can be seen via the output html file `coverage.html`.
