@@ -1,7 +1,7 @@
-# Docker file based on helloworld app from 
+# Dockerfile based on helloworld app from
 # https://github.com/GoogleCloudPlatform/golang-samples/blob/main/run/helloworld/Dockerfile
 
-# Use the offical golang image to create a binary.
+# Use the official golang image to create a binary.
 FROM golang:1.21-bookworm as builder
 
 # Create and change to the app directory.
@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 
 # Build the binary.
-RUN go build -v -o receipt-processor
+RUN go build -o receipt-processor
 
 # Use the official Debian slim image for a lean production container.
 FROM debian:bookworm-slim
