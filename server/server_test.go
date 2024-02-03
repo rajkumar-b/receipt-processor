@@ -12,7 +12,7 @@ import (
 func TestStartServer(t *testing.T) {
 	port := 8080
 
-	// Start the server
+	// Start the server in a subroutine
 	go func() {
 		err := StartServer(port)
 		assert.NoError(t, err, "StartServer returned an error")
