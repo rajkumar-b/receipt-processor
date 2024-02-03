@@ -21,10 +21,11 @@ func setupRouter() *gin.Engine {
 
 func StartServer(port int) error {
 	router := setupRouter()
+	addr := fmt.Sprintf("0.0.0.0:%d", port)
 
 	fmt.Printf("\nReceipt Processor Server is running on port %d...\n", port)
 	fmt.Printf("Access the API via localhost: http://localhost:%d/<endpoint>\n\n", port)
 	fmt.Printf("To test a simple ping, use: http://localhost:%d/ping\n\n", port)
 
-	return http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", port), router)
+	return http.ListenAndServe(addr, router)
 }
