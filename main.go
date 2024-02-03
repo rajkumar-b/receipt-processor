@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	
 	"github.com/gin-gonic/gin"
 	"rajkumar.app/receipt-processor/handler"
 )
@@ -16,9 +18,12 @@ func main() {
 	router.GET("/ping", handler.SendPing)
 	router.GET("/items", handler.GetItems)
 
-	// Start server
+	// Start server and bind to all network interfaces
 	port := 8080
 	fmt.Printf("\nReceipt Processor Server is running on port %d...\n", port)
 	fmt.Printf("Access the API via localhost: http://localhost:%d/<endpoint>\n\n", port)
-	router.Run(fmt.Sprintf("localhost:%d", port))
+	err := http.ListenAndServe("0.0.0.0:8080", router)
+	if err != nil {
+		fmt.Println("Failed to start the server:", err)
+	}
 }
