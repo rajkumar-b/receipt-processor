@@ -14,13 +14,17 @@ var (
 
 func init() {
 	validate = validator.New()
+	registerItemValidator()
+}
+
+func registerItemValidator() {
 	validate.RegisterValidation("descriptionValidator", validateDescription)
 	validate.RegisterValidation("priceValidator", validatePrice)
 }
 
 // Item represents data about a store item.
 type Item struct {
-	Description 	string  `json:"shortDescription" validate:"required,descriptionValidator"`
+	Description 	string	`json:"shortDescription" validate:"required,descriptionValidator"`
 	Price       	string	`json:"price" validate:"required,priceValidator"`
 }
 
