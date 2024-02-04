@@ -289,7 +289,7 @@ func TestReceiptValidation(t *testing.T) {
 		assert.Contains(t, err.Error(), "datetime", "Error message should mention the failed validator")
 	})
 	
-	t.Run("Valid Receipt - multiple items with one invalid item", func(t *testing.T) {
+	t.Run("Invalid Receipt - multiple items with one invalid item", func(t *testing.T) {
 		validReceipt := Receipt{
 			Retailer:      "Valid Retailer",
 			PurchaseDate:  "2022-09-20",
@@ -311,5 +311,100 @@ func TestReceiptValidation(t *testing.T) {
 		assert.Error(t, err, "Validation should fail for an invalid item price")
 		assert.Contains(t, err.Error(), "priceValidator", "Error message should mention the failed validator")
 	})
+
+}
+
+func TestValidateReceipts(t *testing.T) {
+	t.Run("Empty Items Slice", func(t *testing.T) {
+		// Ensure that ValidateItems works correctly with an empty slice
+		err := ValidateReceipts()
+		assert.NoError(t, err, "ValidateReceipts should pass with an empty items slice")
+	})
+
+	t.Run("Valid Receipt", func(t *testing.T) {
+		// Add some valid receipts to the Items slice
+		validReceipts := []Receipt{
+			{
+				Retailer:      "Valid Retailer 1",
+				PurchaseDate:  "2022-09-20",
+				PurchaseTime:  "13:01",
+				PurchasedItems: []Item{
+					{
+						Description: "Valid Item 1",
+						Price:       "2.99",
+					},
+					{
+						Description: "Valid Item 2",
+						Price:       "1.99",
+					},
+				},
+				Total: "4.98",
+			},
+			{
+				Retailer:      "Valid Retailer",
+				PurchaseDate:  "2022-09-20",
+				PurchaseTime:  "13:01",
+				PurchasedItems: []Item{
+					{
+						Description: "Valid Item 1",
+						Price:       "2.99",
+					},
+					{
+						Description: "Valid Item 2",
+						Price:       "1.99",
+					},
+				},
+				Total: "4.98",
+			},
+		}
+
+		Receipts = append(Receipts, validReceipts...)
+
+		err := ValidateReceipts()
+		assert.NoError(t, err, "ValidateReceipts should pass with valid receipts")
+	})
 	
+	t.Run("Invalid Receipt", func(t *testing.T) {
+		// Add some valid receipts to the Items slice
+		validReceipts := []Receipt{
+			{
+				Retailer:      "Valid Retailer 1",
+				PurchaseDate:  "2022-09-20",
+				PurchaseTime:  "13:01",
+				PurchasedItems: []Item{
+					{
+						Description: "Valid Item 1",
+						Price:       "2.99",
+					},
+					{
+						Description: "Valid Item 2",
+						Price:       "1.99",
+					},
+				},
+				Total: "4.98",
+			},
+			{
+				Retailer:      "Valid Retailer",
+				PurchaseDate:  "2022-09-20",
+				PurchaseTime:  "13:01",
+				PurchasedItems: []Item{
+					{
+						Description: "Invalid Item 1",
+						Price:       "-2.99",
+					},
+					{
+						Description: "Valid Item 2",
+						Price:       "1.99",
+					},
+				},
+				Total: "4.98",
+			},
+		}
+
+		Receipts = append(Receipts, validReceipts...)
+
+		err := ValidateReceipts()
+		assert.Error(t, err, "ValidateReceipts should fail with invalid receipts")
+		assert.Contains(t, err.Error(), "validation error", "Error message should indicate a validation error")
+	})
 }
