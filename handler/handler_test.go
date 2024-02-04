@@ -108,12 +108,15 @@ func TestGetPointsForReceipt(t *testing.T) {
 		assert.Equal(t, w.Code, http.StatusOK)
 		
 		// Parse the response body into a map
-		var point int
-		err := json.Unmarshal(w.Body.Bytes(), &point)
+		var responseBody map[string]interface{}
+		err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 		assert.NoError(t, err)
 
+		points, ok := responseBody["points"]
+		assert.True(t, ok, "No 'points' field found in the response")
+
 		// Perform the assertion for points
-		assert.Equal(t, 0, point, "Points should be 0")
+		assert.Equal(t, 0, int(points.(float64)), "Points should be 0")
 	})
 
 	t.Run("Receipt Found - Actual Point Check - single receipt", func(t *testing.T) {
@@ -126,12 +129,15 @@ func TestGetPointsForReceipt(t *testing.T) {
 		assert.Equal(t, w.Code, http.StatusOK)
 		
 		// Parse the response body into a map
-		var point int
-		err := json.Unmarshal(w.Body.Bytes(), &point)
+		var responseBody map[string]interface{}
+		err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 		assert.NoError(t, err)
 
+		points, ok := responseBody["points"]
+		assert.True(t, ok, "No 'points' field found in the response")
+
 		// Perform the assertion for points
-		assert.Equal(t, 0, point, "Points should be 0")
+		assert.Equal(t, 0, int(points.(float64)), "Points should be 0")
 	})
 
 	t.Run("Receipt Found - Actual Point Check - multi receipt", func(t *testing.T) {
@@ -144,11 +150,14 @@ func TestGetPointsForReceipt(t *testing.T) {
 		assert.Equal(t, w.Code, http.StatusOK)
 		
 		// Parse the response body into a map
-		var point int
-		err := json.Unmarshal(w.Body.Bytes(), &point)
+		var responseBody map[string]interface{}
+		err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 		assert.NoError(t, err)
 
+		points, ok := responseBody["points"]
+		assert.True(t, ok, "No 'points' field found in the response")
+
 		// Perform the assertion for points
-		assert.Equal(t, 0, point, "Points should be 0")
+		assert.Equal(t, 0, int(points.(float64)), "Points should be 0")
 	})
 }
