@@ -27,7 +27,46 @@ func TestReceiptValidation(t *testing.T) {
 		assert.NoError(t, err, "Validation should pass for a valid receipt")
 	})
 
-	
+	t.Run("Valid Receipt - check ID", func(t *testing.T) {
+		validReceipt := Receipt{
+			Retailer:      "Valid Retailer",
+			PurchaseDate:  "2022-09-20",
+			PurchaseTime:  "13:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item",
+					Price:       "2.99",
+				},
+			},
+			Total: "2.99",
+		}
+
+		err := validReceipt.Validate()
+		assert.NoError(t, err, "Validation should pass for a valid receipt")
+		
+		err_id := validReceipt.Validate()
+		assert.NoError(t, err_id, "Validation should pass for a valid receipt")
+	})
+
+	t.Run("Valid Receipt - With ID", func(t *testing.T) {
+		validReceipt := Receipt{
+			ID:				"some-id",
+			Retailer:		"Valid Retailer",
+			PurchaseDate:	"2022-09-20",
+			PurchaseTime:	"13:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item",
+					Price:       "2.99",
+				},
+			},
+			Total: "2.99",
+		}
+
+		err := validReceipt.Validate()
+		assert.NoError(t, err, "Validation should pass for a valid receipt")
+	})
+
 	t.Run("Valid Receipt - multiple items", func(t *testing.T) {
 		validReceipt := Receipt{
 			Retailer:      "Valid Retailer",
@@ -122,6 +161,69 @@ func TestReceiptValidation(t *testing.T) {
 		assert.NoError(t, err, "Validation should pass for a valid receipt")
 	})
 	
+	t.Run("Valid Receipt - zero points", func(t *testing.T) {
+		validReceipt := Receipt{
+			Retailer:      "Valid_Retailer",
+			PurchaseDate:  "2022-09-20",
+			PurchaseTime:  "3:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 1",
+					Price:       "0.00",
+				},
+			},
+			Total: "0.00",
+		}
+
+		validReceipt.SetPoints(0)
+		assert.Equal(t, 0, validReceipt.Points, "Points should be set to 0")
+
+		err := validReceipt.Validate()
+		assert.NoError(t, err, "Validation should pass for a valid receipt")
+	})
+	
+	t.Run("Valid Receipt - negative points", func(t *testing.T) {
+		validReceipt := Receipt{
+			Retailer:      "Valid_Retailer",
+			PurchaseDate:  "2022-09-20",
+			PurchaseTime:  "3:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 1",
+					Price:       "0.00",
+				},
+			},
+			Total: "0.00",
+		}
+
+		validReceipt.SetPoints(-13)
+		assert.Equal(t, -13, validReceipt.Points, "Points should be set to -13")
+
+		err := validReceipt.Validate()
+		assert.NoError(t, err, "Validation should pass for a valid receipt")
+	})
+	
+	t.Run("Valid Receipt - positive points", func(t *testing.T) {
+		validReceipt := Receipt{
+			Retailer:      "Valid_Retailer",
+			PurchaseDate:  "2022-09-20",
+			PurchaseTime:  "3:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 1",
+					Price:       "0.00",
+				},
+			},
+			Total: "0.00",
+		}
+
+		validReceipt.SetPoints(10)
+		assert.Equal(t, 10, validReceipt.Points, "Points should be set to 10")
+
+		err := validReceipt.Validate()
+		assert.NoError(t, err, "Validation should pass for a valid receipt")
+	})
+	
 	t.Run("Invalid Receipt - Zero Items", func(t *testing.T) {
 		validReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
@@ -154,6 +256,26 @@ func TestReceiptValidation(t *testing.T) {
 		err := validReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid item description")
 		assert.Contains(t, err.Error(), "descriptionValidator", "Error message should mention the failed validator")
+	})
+	
+	t.Run("Invalid Receipt - Invalid ID", func(t *testing.T) {
+		validReceipt := Receipt{
+			ID:				"invalid id with space",
+			Retailer:		"Valid_Retailer",
+			PurchaseDate:	"2022-09-20",
+			PurchaseTime:	"3:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item",
+					Price:       "4.00",
+				},
+			},
+			Total: "4.00",
+		}
+
+		err := validReceipt.Validate()
+		assert.Error(t, err, "Validation should fail for an invalid ID value")
+		assert.Contains(t, err.Error(), "idValidator", "Error message should mention the failed validator")
 	})
 	
 	t.Run("Invalid Receipt - Invalid Item (Price)", func(t *testing.T) {

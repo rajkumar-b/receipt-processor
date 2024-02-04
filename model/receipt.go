@@ -59,15 +59,14 @@ func (receipt *Receipt) Validate() error {
 	return nil
 }
 
-// Generate ID only if it is not present	
+// generateID generates and sets ID only if it is not present	
 func (receipt *Receipt) generateID() {
 	if receipt.ID == "" {
 		receipt.ID = uuid.New().String()
 	}
 }
 
-
-// BindData initializes ID and Points for the Receipt struct.	
+// SetPoints sets the passed Points to the Receipt.	
 func (receipt *Receipt) SetPoints(points int) {
     receipt.Points = points
 }
