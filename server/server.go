@@ -6,6 +6,9 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger"
+	swaggerfiles "github.com/swaggo/files"
+	docs "rajkumar.app/receipt-processor/docs"
 	"rajkumar.app/receipt-processor/handler"
 )
 
@@ -13,6 +16,7 @@ func setupRouter() *gin.Engine {
 	router := gin.Default()
 	router.ForwardedByClientIP = true
 
+	// Define Routes
 	router.GET("/ping", handler.SendPing)
 	router.POST("/receipts/process", handler.AddNewReceipt)
 	router.GET("/receipts/:id/points", handler.GetPointsForReceipt)
@@ -30,8 +34,14 @@ func StartServer(port int) error {
 	}
 	addr := fmt.Sprintf("%s:%d", bindAddress, port)
 
+	// Add Swagger UI
+	docs.SwaggerInfo.BasePath = "/"
+	url := ginSwagger.URL(fmt.Sprintf("http://localhost:%d/swagger/doc.json", port))
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
+
+
 	fmt.Printf("\nReceipt Processor Server is running on port %d...\n", port)
-	fmt.Printf("Access the API via localhost: http://localhost:%d/<endpoint>\n\n", port)
+	fmt.Printf("Access the REST API via Swagger UI: http://localhost:%d/swagger/index.html\n\n", port)
 	fmt.Printf("To test a simple ping, use: http://localhost:%d/ping\n\n", port)
 
 	return http.ListenAndServe(addr, router)

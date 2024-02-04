@@ -12,7 +12,13 @@ import (
 	"rajkumar.app/receipt-processor/model"
 )
 
-// SendPing responds with a simple JSON reply.
+// @Summary responds with a simple JSON reply.
+// @Schemes
+// @Description Do a simple ping to test the server and get a pong response if active
+// @Tags Ping Test
+// @Produce json
+// @Success 200 "Pong response"
+// @Router /ping [get]
 func SendPing(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",
@@ -88,7 +94,15 @@ func calcPoints(receipt model.Receipt) int{
 	return point
 }
 
-// GetPointsForReceipt responds with the points of a receipt by its ID.
+// @Summary responds with the points of a receipt by its ID.
+// @Schemes
+// @Description Send a valid receipt ID to the server and get its points score if present
+// @Tags Receipt
+// @Param	id		path	string		true	"Receipt ID"
+// @Produce json
+// @Success 200 "Points for the receipt"
+// @Failure 404 "No receipt found"
+// @Router /receipts/{id}/points [get]
 func GetPointsForReceipt(c *gin.Context) {
 	receiptID := c.Param("id")
 
@@ -101,7 +115,16 @@ func GetPointsForReceipt(c *gin.Context) {
     c.IndentedJSON(http.StatusOK, gin.H{"points": receipt.Points})
 }
 
-// AddNewReceipt responds with the ID of the given receipt, if created.
+// @Summary responds with the ID of the given receipt, if created.
+// @Schemes
+// @Description Send a valid receipt in json format to the server and get its ID back if validated and stored in the system
+// @Tags Receipt
+// @Param	receipt		body	model.Receipt	true	"Receipt object"
+// @Accept json
+// @Produce json
+// @Success 200 "ID of the newly created receipt"
+// @Failure 400 "Invalid receipt"
+// @Router /receipts/process [post]
 func AddNewReceipt(c *gin.Context) {
 	var receipt model.Receipt
 
