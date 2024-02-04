@@ -7,15 +7,19 @@ import (
 )
 
 var (
-	validateItem *validator.Validate
+	validate *validator.Validate
 	descriptionRegex = "^[\\w\\s\\-]+$"
 	priceRegex = "^\\d+\\.\\d{2}$"
 )
 
 func init() {
-	validateItem = validator.New()
-	validateItem.RegisterValidation("descriptionValidator", validateDescription)
-	validateItem.RegisterValidation("priceValidator", validatePrice)
+	validate = validator.New()
+	registerItemValidator()
+}
+
+func registerItemValidator() {
+	validate.RegisterValidation("descriptionValidator", validateDescription)
+	validate.RegisterValidation("priceValidator", validatePrice)
 }
 
 // Item represents data about a store item.
@@ -36,7 +40,7 @@ func validatePrice(fl validator.FieldLevel) bool {
 
 // Validate checks if the item's fields meet the specified criteria.
 func (item *Item) Validate() error {
-	if err := validateItem.Struct(item); err != nil {
+	if err := validate.Struct(item); err != nil {
 		return fmt.Errorf("validation error for record - '%s': %w", item.Description, err)
 	}
 	return nil

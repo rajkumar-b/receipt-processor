@@ -7,24 +7,26 @@ import (
 )
 
 var (
-	validateReceipt *validator.Validate
 	retailerRegex = "^[\\w\\s\\-]+$"
 	totalRegex = "^\\d+\\.\\d{2}$"
 )
 
 func init() {
-	validateReceipt = validator.New()
-	validateReceipt.RegisterValidation("retailerValidator", validateRetailer)
-	validateReceipt.RegisterValidation("totalValidator", validateTotal)
+	registerReceiptValidator()
+}
+
+func registerReceiptValidator() {
+	validate.RegisterValidation("retailerValidator", validateRetailer)
+	validate.RegisterValidation("totalValidator", validateTotal)
 }
 
 // Receipt represents data about a purchase receipt.
 type Receipt struct {
     Retailer		string		`json:"retailer" validate:"required,retailerValidator"`
-    PurchaseDate	string		`json:"purchaseDate" validate:"required,date"`
-    PurchaseTime	string		`json:"purchaseTime" validate:"required,time"`
-    items			[]item		`json:"items" validate:"required,min=1,dive"`
-    Total			float64		`json:"total" validate:"required,totalValidator"`
+    PurchaseDate	string		`json:"purchaseDate" validate:"required,datetime=2006-01-02"`
+    PurchaseTime	string		`json:"purchaseTime" validate:"required,datetime=15:04"`
+    PurchasedItems	[]Item		`json:"items" validate:"required,min=1,dive"`
+    Total			string		`json:"total" validate:"required,totalValidator"`
 }
 
 // Custom validation function for Retailer field
@@ -40,7 +42,7 @@ func validateTotal(fl validator.FieldLevel) bool {
 
 // Validate checks if the receipt's fields meet the specified criteria.
 func (receipt *Receipt) Validate() error {
-	if err := validateReceipt.Struct(receipt); err != nil {
+	if err := validate.Struct(receipt); err != nil {
 		return fmt.Errorf("validation error for record - '%s': %w", receipt.Retailer, err)
 	}
 	return nil
