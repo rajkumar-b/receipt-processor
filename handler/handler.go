@@ -1,6 +1,10 @@
 package handler
 
 import (
+	"math"
+	"time"
+	"strconv"
+	"unicode"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,9 +18,61 @@ func SendPing(c *gin.Context) {
 	})
 }
 
+func getAlphaNumericCount(input string) int {
+	charCount := 0
+	for _, char := range input {
+		if unicode.IsLetter(char) || unicode.IsDigit(char) {
+			charCount++
+		}
+	}
+	return charCount
+}
+
+func checkRoundedSum(val string) bool {
+	floatVal, _ := strconv.ParseFloat(val, 64)
+	roundedInt := int(math.Round(floatVal))
+	return float64(roundedInt) == floatVal
+}
+
+func checkMulipleOf(val string, multiple float64) bool {
+	floatVal, _ := strconv.ParseFloat(val, 64)
+	epsilon := 1e-9 // A small epsilon value for precision comparison
+	remainder := math.Mod(floatVal, multiple)
+	return math.Abs(remainder) < epsilon
+}
+
+func isDayOdd(dateString string) bool {
+	parsedDate, _ := time.Parse("2006-01-02", dateString)
+	day := parsedDate.Day()
+	return day%2 == 1
+}
+
+func isWithinTimeRange(purchaseTime string, start string, end string) bool {
+	parsedTime, _ := time.Parse("15:04", purchaseTime)
+	startTime, _ := time.Parse("15:04", start)
+	endTime, _ := time.Parse("15:04", end)
+	return parsedTime.After(startTime) && parsedTime.Before(endTime)
+}
+
 // Calculate Points for given receipt and store it if valid receipt with id
 func calcPoints(receipt model.Receipt) {
 	point := 0
+	point += getAlphaNumericCount(receipt.Retailer)
+	if checkRoundedSum(receipt.Total) {
+		point += 50
+	}
+	if checkMulipleOf(receipt.Total, 0.25) {
+		point += 25
+	}
+	point += (len(receipt.PurchasedItems)/2) * 5
+	//TODO: item trim logic
+	if isDayOdd(receipt.PurchaseDate) {
+		point += 6
+	}
+	if isWithinTimeRange(receipt.PurchaseTime, "14:00", "16:00") {
+		point += 10
+	}
+
 	receipt.SetPoints(point)
 }
 
