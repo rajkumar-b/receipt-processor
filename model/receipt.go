@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	retailerRegex = "^[\\w\\s\\-]+$"
+	retailerRegex = "^[\\w\\s\\-&]+$"
 	totalRegex = "^\\d+\\.\\d{2}$"
 	idRegex = "^\\S+$"
 )

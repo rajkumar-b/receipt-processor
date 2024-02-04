@@ -124,6 +124,24 @@ func TestReceiptValidation(t *testing.T) {
 		assert.NoError(t, err, "Validation should pass for a valid receipt")
 	})
 	
+	t.Run("Valid Receipt - symboled retailer", func(t *testing.T) {
+		validReceipt := Receipt{
+			Retailer:      "M&M Corner Market",
+			PurchaseDate:  "2022-09-20",
+			PurchaseTime:  "3:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item",
+					Price:       "2.99",
+				},
+			},
+			Total: "2.99",
+		}
+
+		err := validReceipt.Validate()
+		assert.NoError(t, err, "Validation should pass for a valid receipt")
+	})
+	
 	t.Run("Valid Receipt - underscore in retailer", func(t *testing.T) {
 		validReceipt := Receipt{
 			Retailer:      "Valid_Retailer",

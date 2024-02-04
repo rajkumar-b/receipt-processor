@@ -18,6 +18,10 @@ To simply test the project deliverables, follow below steps:
 4. Spawn up the container from the built image using cmd: `docker-compose -f docker/docker-compose.yml up`
 5. Test the APIs
 6. Once done, bring down the container either using exit commands like 'CTRL+C' in same terminal or using the command `docker-compose -f docker/docker-compose.yml down` via different terminal in same root.
+
+Side Note:
+
+The api.yml file gives the regex for Retailers under a receipt as `"^[\\w\\s\\-]+$"` which is essentially alphabets, numbers, underscores, hyphens and spaces. However, the example uses `"&"` both in the yml file, as well as the calculatePoints example 2 in readme. So, including `&` into the validator regex for now. However, I strongly suggest it is taken care of somewhere, either the regex updated, or the retailer name. 
 <br><br><br><br>
 
 _______________________________________ 
