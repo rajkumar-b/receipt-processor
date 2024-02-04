@@ -67,8 +67,8 @@ func isWithinTimeRange(purchaseTime string, start string, end string) bool {
 	return parsedTime.After(startTime) && parsedTime.Before(endTime)
 }
 
-// Calculate Points for given receipt and store it if valid receipt with id
-func calcPoints(receipt model.Receipt) {
+// Calculate Points for given receipt
+func calcPoints(receipt model.Receipt) int{
 	point := 0
 	point += getAlphaNumericCount(receipt.Retailer)
 	if checkRoundedSum(receipt.Total) {
@@ -85,8 +85,7 @@ func calcPoints(receipt model.Receipt) {
 	if isWithinTimeRange(receipt.PurchaseTime, "14:00", "16:00") {
 		point += 10
 	}
-
-	receipt.SetPoints(point)
+	return point
 }
 
 // GetPointsForReceipt responds with the points of a receipt by its ID.
@@ -116,8 +115,8 @@ func AddNewReceipt(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "The receipt is invalid"})
         return
     }
-
-	calcPoints(receipt)
+	// Calculate points and store it
+	receipt.SetPoints(calcPoints(receipt))
 
     // Add the new receipt to the slice.
     model.Receipts = append(model.Receipts, receipt)
