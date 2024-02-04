@@ -82,3 +82,17 @@ func ValidateReceipts() error {
 	}
 	return nil
 }
+
+// GetReceiptByID retrieves a receipt by its ID.
+func GetReceiptByID(id string) (*Receipt, error) {
+	if id == "" {
+		return nil, fmt.Errorf("No ID passed")
+	}
+
+    for _, receipt := range Receipts {
+        if receipt.ID == id {
+            return &receipt, nil
+        }
+    }
+    return nil, fmt.Errorf("receipt not found")
+}

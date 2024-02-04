@@ -14,7 +14,7 @@ func setupRouter() *gin.Engine {
 	router.ForwardedByClientIP = true
 
 	router.GET("/ping", handler.SendPing)
-	router.GET("/items", handler.GetItems)
+	router.GET("/receipts/:id/points", handler.GetPointsForReceipt)
 
 	return router
 }

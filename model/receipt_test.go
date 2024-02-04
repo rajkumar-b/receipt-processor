@@ -1,7 +1,6 @@
 package model
 
 import (
-	// "encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -225,7 +224,7 @@ func TestReceiptValidation(t *testing.T) {
 	})
 	
 	t.Run("Invalid Receipt - Zero Items", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "3:01",
@@ -234,13 +233,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "0.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid item count")
 		assert.Contains(t, err.Error(), "min", "Error message should mention the failed validator")
 	})
 	
 	t.Run("Invalid Receipt - Invalid Item (Description)", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "3:01",
@@ -253,13 +252,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "4.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid item description")
 		assert.Contains(t, err.Error(), "descriptionValidator", "Error message should mention the failed validator")
 	})
 	
 	t.Run("Invalid Receipt - Invalid ID", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			ID:				"invalid id with space",
 			Retailer:		"Valid_Retailer",
 			PurchaseDate:	"2022-09-20",
@@ -273,13 +272,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "4.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid ID value")
 		assert.Contains(t, err.Error(), "idValidator", "Error message should mention the failed validator")
 	})
 	
 	t.Run("Invalid Receipt - Invalid Item (Price)", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "3:01",
@@ -292,13 +291,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "0.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid item price")
 		assert.Contains(t, err.Error(), "priceValidator", "Error message should mention the failed validator")
 	})
 	
 	t.Run("Invalid Receipt - negative total", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "23:01",
@@ -311,13 +310,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "-3.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid total")
 		assert.Contains(t, err.Error(), "totalValidator", "Error message should mention the failed validator")
 	})
 
 	t.Run("Invalid Receipt - integer(as string) total", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "23:01",
@@ -330,13 +329,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "3",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid total")
 		assert.Contains(t, err.Error(), "totalValidator", "Error message should mention the failed validator")
 	})
 
 	t.Run("Invalid Receipt - integer(as string) total", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "23:01",
@@ -349,13 +348,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "3",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid total")
 		assert.Contains(t, err.Error(), "totalValidator", "Error message should mention the failed validator")
 	})
 	
 	t.Run("Invalid Receipt - shortened minute", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "3:1",
@@ -368,13 +367,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "3.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid time")
 		assert.Contains(t, err.Error(), "datetime", "Error message should mention the failed validator")
 	})
 
 	t.Run("Invalid Receipt - shortened month", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-9-20",
 			PurchaseTime:  "03:01",
@@ -387,13 +386,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "3.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid date")
 		assert.Contains(t, err.Error(), "datetime", "Error message should mention the failed validator")
 	})
 
 	t.Run("Invalid Receipt - shortened date", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid_Retailer",
 			PurchaseDate:  "2022-09-2",
 			PurchaseTime:  "03:01",
@@ -406,13 +405,13 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "3.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid date")
 		assert.Contains(t, err.Error(), "datetime", "Error message should mention the failed validator")
 	})
 	
 	t.Run("Invalid Receipt - multiple items with one invalid item", func(t *testing.T) {
-		validReceipt := Receipt{
+		invalidReceipt := Receipt{
 			Retailer:      "Valid Retailer",
 			PurchaseDate:  "2022-09-20",
 			PurchaseTime:  "13:01",
@@ -429,7 +428,7 @@ func TestReceiptValidation(t *testing.T) {
 			Total: "1.00",
 		}
 
-		err := validReceipt.Validate()
+		err := invalidReceipt.Validate()
 		assert.Error(t, err, "Validation should fail for an invalid item price")
 		assert.Contains(t, err.Error(), "priceValidator", "Error message should mention the failed validator")
 	})
@@ -488,7 +487,7 @@ func TestValidateReceipts(t *testing.T) {
 	
 	t.Run("Invalid Receipt", func(t *testing.T) {
 		// Add some valid receipts to the Items slice
-		validReceipts := []Receipt{
+		invalidReceipts := []Receipt{
 			{
 				Retailer:      "Valid Retailer 1",
 				PurchaseDate:  "2022-09-20",
@@ -523,10 +522,91 @@ func TestValidateReceipts(t *testing.T) {
 			},
 		}
 
-		Receipts = append(Receipts, validReceipts...)
+		Receipts = append(Receipts, invalidReceipts...)
 
 		err := ValidateReceipts()
 		assert.Error(t, err, "ValidateReceipts should fail with invalid receipts")
 		assert.Contains(t, err.Error(), "validation error", "Error message should indicate a validation error")
 	})
+}
+
+func TestGetReceiptByID(t *testing.T) {
+	
+	Receipts = []Receipt{
+		{
+			ID:				"abc-def-ghij",
+			Retailer:		"Valid Retailer 1",
+			PurchaseDate:	"2022-09-20",
+			PurchaseTime:	"13:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 1",
+					Price:       "2.99",
+				},
+				{
+					Description: "Valid Item 2",
+					Price:       "1.99",
+				},
+			},
+			Total: "4.98",
+		},
+		{
+			ID:				"xyz-hijk-lmnop",
+			Retailer:		"Valid Retailer 2",
+			PurchaseDate:	"2022-09-12",
+			PurchaseTime:	"03:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 3",
+					Price:       "5.99",
+				},
+			},
+			Total: "5.99",
+		},
+		{
+			Retailer:		"Valid Retailer 1",
+			PurchaseDate:	"2022-02-20",
+			PurchaseTime:	"23:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 4",
+					Price:       "1.99",
+				},
+				{
+					Description: "Valid Item 5",
+					Price:       "5.99",
+				},
+			},
+			Total: "7.98",
+		},
+	}
+
+	err := ValidateReceipts()
+	assert.NoError(t, err, "ValidateReceipts should pass with valid receipts")
+
+	t.Run("Empty ID", func(t *testing.T) {
+		_, err := GetReceiptByID("")
+		assert.Error(t, err, "GetReceiptByID should fail with invalid receipt id")
+		assert.Contains(t, err.Error(), "No ID passed", "Error message should indicate a validation error")
+	})
+
+	t.Run("Valid ID in list", func(t *testing.T) {
+		receipt, err := GetReceiptByID("abc-def-ghij")
+
+		assert.Equal(t, Receipts[0].ID, receipt.ID, "No receipt fetched")
+		assert.NoError(t, err, "GetReceiptByID should pass with valid receipt id")
+	})
+
+	t.Run("Valid ID not in list", func(t *testing.T) {
+		_, err := GetReceiptByID("abc-def-mnop")
+		assert.Error(t, err, "GetReceiptByID should fail with invalid receipt id")
+		assert.Contains(t, err.Error(), "receipt not found", "Error message should indicate a validation error")
+	})
+
+	t.Run("Invalid ID", func(t *testing.T) {
+		_, err := GetReceiptByID("abc def ghij")
+		assert.Error(t, err, "GetReceiptByID should fail with invalid receipt id")
+		assert.Contains(t, err.Error(), "receipt not found", "Error message should indicate a validation error")
+	})
+
 }
