@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -160,4 +161,93 @@ func TestGetPointsForReceipt(t *testing.T) {
 		// Perform the assertion for points
 		assert.Equal(t, 0, int(points.(float64)), "Points should be 0")
 	})
+}
+
+
+func TestAddNewReceipt(t *testing.T) {
+	router := gin.New()
+	router.POST("/receipts/process", AddNewReceipt)
+
+	t.Run("Receipt created successfully", func(t *testing.T) {
+		rawJSON := `{
+			"retailer": "Target",
+			"purchaseDate": "2022-01-02",
+			"purchaseTime": "13:13",
+			"total": "1.25",
+			"items": [
+				{"shortDescription": "Pepsi - 12-oz", "price": "1.25"}
+			]
+		}`
+
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/receipts/process", bytes.NewBufferString(rawJSON))
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, w.Code, http.StatusOK)
+	})
+
+	t.Run("Receipt created successfully - multiple items", func(t *testing.T) {
+		rawJSON := `{
+			"retailer": "Walgreens",
+			"purchaseDate": "2022-01-02",
+			"purchaseTime": "08:13",
+			"total": "2.65",
+			"items": [
+				{"shortDescription": "Pepsi - 12-oz", "price": "1.25"},
+				{"shortDescription": "Dasani", "price": "1.40"}
+			]
+		}}`
+
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/receipts/process", bytes.NewBufferString(rawJSON))
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, w.Code, http.StatusOK)
+	})
+	
+	t.Run("Receipt creation failed - no payload", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/receipts/process", nil)
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, w.Code, http.StatusBadRequest)
+	})
+
+	
+	t.Run("Receipt creation failed - invalid values", func(t *testing.T) {
+		rawJSON := `{
+			"retailer": "Target",
+			"purchaseDate": "2022-01-02",
+			"purchaseTime": "3:3",
+			"total": "-1.25",
+			"items": [
+				{"shortDescription": "Pepsi - 12-oz", "price": "1.25"}
+			]
+		}`
+
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/receipts/process", bytes.NewBufferString(rawJSON))
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, w.Code, http.StatusBadRequest)
+	})
+
+	
+	t.Run("Receipt creation failed - missing columns", func(t *testing.T) {
+		rawJSON := `{
+			"retailer": "Target",
+			"purchaseDate": "2022-01-02",
+			"purchaseTime": "3:33",
+			"items": [
+				{"shortDescription": "Pepsi - 12-oz", "price": "1.25"}
+			]
+		}`
+
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/receipts/process", bytes.NewBufferString(rawJSON))
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, w.Code, http.StatusBadRequest)
+	})
+
 }
