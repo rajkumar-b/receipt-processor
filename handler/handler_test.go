@@ -31,8 +31,8 @@ func TestGetPointsForReceipt(t *testing.T) {
 		{
 			ID:				"abc-def-ghij",
 			Retailer:		"Valid Retailer 1",
-			PurchaseDate:	"2022-09-20",
-			PurchaseTime:	"13:01",
+			PurchaseDate:	"2022-09-19",
+			PurchaseTime:	"15:01",
 			PurchasedItems: []model.Item{
 				{
 					Description: "Valid Item 1",
@@ -53,10 +53,10 @@ func TestGetPointsForReceipt(t *testing.T) {
 			PurchasedItems: []model.Item{
 				{
 					Description: "Valid Item 3",
-					Price:       "5.99",
+					Price:       "5.00",
 				},
 			},
-			Total: "5.99",
+			Total: "5.00",
 		},
 		{
 			Retailer:		"Valid Retailer 1",
@@ -138,7 +138,7 @@ func TestGetPointsForReceipt(t *testing.T) {
 		assert.True(t, ok, "No 'points' field found in the response")
 
 		// Perform the assertion for points
-		assert.Equal(t, 0, int(points.(float64)), "Points should be 0")
+		assert.Equal(t, validReceipts[1].Points, int(points.(float64)), "Points should be same")
 	})
 
 	t.Run("Receipt Found - Actual Point Check - multi receipt", func(t *testing.T) {
@@ -159,7 +159,7 @@ func TestGetPointsForReceipt(t *testing.T) {
 		assert.True(t, ok, "No 'points' field found in the response")
 
 		// Perform the assertion for points
-		assert.Equal(t, 0, int(points.(float64)), "Points should be 0")
+		assert.Equal(t, validReceipts[0].Points, int(points.(float64)), "Points should be same")
 	})
 }
 
