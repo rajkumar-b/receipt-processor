@@ -37,12 +37,11 @@ func GetPointsForReceipt(c *gin.Context) {
 func AddNewReceipt(c *gin.Context) {
 	var receipt model.Receipt
 
-    // Call BindJSON to bind the received JSON to
-    // newAlbum.
     if err := c.BindJSON(&receipt); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "The receipt is invalid"})
         return
     }
+	receipt.ID = ""
 
 	if valerr := receipt.Validate(); valerr != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "The receipt is invalid"})
