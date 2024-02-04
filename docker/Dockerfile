@@ -16,6 +16,10 @@ RUN go mod download
 # Copy local code to the container image.
 COPY . .
 
+# Generate Swagger UI files.
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+RUN swag init
+
 # Build the binary.
 RUN go build -o receipt-processor
 

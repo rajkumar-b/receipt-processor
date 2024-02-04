@@ -1,0 +1,96 @@
+definitions:
+  model.Item:
+    properties:
+      price:
+        type: string
+      shortDescription:
+        type: string
+    required:
+    - price
+    - shortDescription
+    type: object
+  model.Receipt:
+    properties:
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/model.Item'
+        minItems: 1
+        type: array
+      points:
+        type: integer
+      purchaseDate:
+        type: string
+      purchaseTime:
+        type: string
+      retailer:
+        type: string
+      total:
+        type: string
+    required:
+    - items
+    - purchaseDate
+    - purchaseTime
+    - retailer
+    - total
+    type: object
+info:
+  contact: {}
+paths:
+  /ping:
+    get:
+      description: Do a simple ping to test the server and get a pong response if
+        active
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Pong response
+      summary: responds with a simple JSON reply.
+      tags:
+      - Ping Test
+  /receipts/{id}/points:
+    get:
+      description: Send a valid receipt ID to the server and get its points score
+        if present
+      parameters:
+      - description: Receipt ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Points for the receipt
+        "404":
+          description: No receipt found
+      summary: responds with the points of a receipt by its ID.
+      tags:
+      - Receipt
+  /receipts/process:
+    post:
+      consumes:
+      - application/json
+      description: Send a valid receipt in json format to the server and get its ID
+        back if validated and stored in the system
+      parameters:
+      - description: Receipt object
+        in: body
+        name: receipt
+        required: true
+        schema:
+          $ref: '#/definitions/model.Receipt'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID of the newly created receipt
+        "400":
+          description: Invalid receipt
+      summary: responds with the ID of the given receipt, if created.
+      tags:
+      - Receipt
+swagger: "2.0"
