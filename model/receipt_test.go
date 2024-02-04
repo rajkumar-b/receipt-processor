@@ -1,7 +1,6 @@
 package model
 
 import (
-	// "encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -529,4 +528,85 @@ func TestValidateReceipts(t *testing.T) {
 		assert.Error(t, err, "ValidateReceipts should fail with invalid receipts")
 		assert.Contains(t, err.Error(), "validation error", "Error message should indicate a validation error")
 	})
+}
+
+func TestGetReceiptByID(t *testing.T) {
+	
+	Receipts = []Receipt{
+		{
+			ID:				"abc-def-ghij",
+			Retailer:		"Valid Retailer 1",
+			PurchaseDate:	"2022-09-20",
+			PurchaseTime:	"13:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 1",
+					Price:       "2.99",
+				},
+				{
+					Description: "Valid Item 2",
+					Price:       "1.99",
+				},
+			},
+			Total: "4.98",
+		},
+		{
+			ID:				"xyz-hijk-lmnop",
+			Retailer:		"Valid Retailer 2",
+			PurchaseDate:	"2022-09-12",
+			PurchaseTime:	"03:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 3",
+					Price:       "5.99",
+				},
+			},
+			Total: "5.99",
+		},
+		{
+			Retailer:		"Valid Retailer 1",
+			PurchaseDate:	"2022-02-20",
+			PurchaseTime:	"23:01",
+			PurchasedItems: []Item{
+				{
+					Description: "Valid Item 4",
+					Price:       "1.99",
+				},
+				{
+					Description: "Valid Item 5",
+					Price:       "5.99",
+				},
+			},
+			Total: "7.98",
+		},
+	}
+
+	err := ValidateReceipts()
+	assert.NoError(t, err, "ValidateReceipts should pass with valid receipts")
+
+	t.Run("Empty ID", func(t *testing.T) {
+		_, err := GetReceiptByID("")
+		assert.Error(t, err, "GetReceiptByID should fail with invalid receipt id")
+		assert.Contains(t, err.Error(), "No ID passed", "Error message should indicate a validation error")
+	})
+
+	t.Run("Valid ID in list", func(t *testing.T) {
+		receipt, err := GetReceiptByID("abc-def-ghij")
+
+		assert.Equal(t, Receipts[0].ID, receipt.ID, "No receipt fetched")
+		assert.NoError(t, err, "GetReceiptByID should pass with valid receipt id")
+	})
+
+	t.Run("Valid ID not in list", func(t *testing.T) {
+		_, err := GetReceiptByID("abc-def-mnop")
+		assert.Error(t, err, "GetReceiptByID should fail with invalid receipt id")
+		assert.Contains(t, err.Error(), "receipt not found", "Error message should indicate a validation error")
+	})
+
+	t.Run("Invalid ID", func(t *testing.T) {
+		_, err := GetReceiptByID("abc def ghij")
+		assert.Error(t, err, "GetReceiptByID should fail with invalid receipt id")
+		assert.Contains(t, err.Error(), "receipt not found", "Error message should indicate a validation error")
+	})
+
 }
