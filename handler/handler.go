@@ -3,6 +3,7 @@ package handler
 import (
 	"math"
 	"time"
+	"strings"
 	"strconv"
 	"unicode"
 	"net/http"
@@ -41,6 +42,18 @@ func checkMulipleOf(val string, multiple float64) bool {
 	return math.Abs(remainder) < epsilon
 }
 
+func getPointsForItemDesc(items []model.Item) int {
+	points := 0
+	for _, item := range items {
+		trimmedLength := len(strings.TrimSpace(item.Description))
+		if (trimmedLength%3 == 0) {
+			price, _ := strconv.ParseFloat(item.Price, 64)
+			points += int(math.Ceil(price * 0.2))
+		}
+	}
+	return points
+}
+
 func isDayOdd(dateString string) bool {
 	parsedDate, _ := time.Parse("2006-01-02", dateString)
 	day := parsedDate.Day()
@@ -65,7 +78,7 @@ func calcPoints(receipt model.Receipt) {
 		point += 25
 	}
 	point += (len(receipt.PurchasedItems)/2) * 5
-	//TODO: item trim logic
+	point += getPointsForItemDesc(receipt.PurchasedItems)
 	if isDayOdd(receipt.PurchaseDate) {
 		point += 6
 	}
